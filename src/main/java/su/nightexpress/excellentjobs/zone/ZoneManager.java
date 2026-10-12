@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.Objects;
 
 import org.bukkit.Axis;
 import org.bukkit.Location;
@@ -138,7 +139,16 @@ public class ZoneManager extends AbstractManager<JobsPlugin> {
 
     @Override
     protected void onShutdown() {
+
+
+
         this.getActiveZones().forEach(this::deactivateZone);
+
+        this.selectionMap.keySet().stream()
+                .map(this.plugin.getServer()::getPlayer)
+                .filter(Objects::nonNull)
+                .forEach(this::removeVisuals);
+        this.selectionMap.clear();
 
         this.zoneMap.clear();
         RequirementRegistry.shutdown();
@@ -167,7 +177,7 @@ public class ZoneManager extends AbstractManager<JobsPlugin> {
     private void loadCommands() {
         Arguments.register(Zone.class, new ZoneArgumentType(this));
 
-        this.plugin.addCommandProvider(new ZoneCommands(this.plugin, this));
+        this.plugin.addCommandProvider(new ZoneCommands(this));
     }
 
     private void loadSettings() {
@@ -337,13 +347,13 @@ public class ZoneManager extends AbstractManager<JobsPlugin> {
     }
 
     public void handleGrindReward(GrindRewardEvent event) {
-        Player player = event.getPlayer();
-        Zone zone = this.getZone(player);
-        if (zone == null && this.settings.isStrictMode()) {
-            event.setCancelled(true);
+        Zone zone = this.getZone(event.getPlayer());
+        if (zone == null) {
+            if (this.settings.isStrictMode() || event.getJob().isZoneOnly()) {
+                event.setCancelled(true);
+            }
             return;
         }
-        if (zone == null) return;
 
         ActiveZone activeZone = this.getActiveZone(zone);
         if (activeZone == null) return;
@@ -504,9 +514,13 @@ public class ZoneManager extends AbstractManager<JobsPlugin> {
     public void selectPosition(Player player, ItemStack itemStack, Location location, Action action) {
         if (!this.isCuboidWand(itemStack)) return;
 
-        Selection selection = this.getSelection(player);
-        if (selection == null) return;
+        if (!player.hasPermission(ZonePerms.COMMAND_ZONE_WAND)) return;
 
+        Selection selection = this.selectionMap.computeIfAbsent(
+                player.getUniqueId(),
+                k -> new Selection()
+        );
+        
         BlockPos blockPos = BlockPos.from(location);
         if (action == Action.LEFT_CLICK_BLOCK) {
             selection.setFirst(blockPos);

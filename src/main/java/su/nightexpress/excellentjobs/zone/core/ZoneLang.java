@@ -1,7 +1,8 @@
 package su.nightexpress.excellentjobs.zone.core;
 
 import su.nightexpress.excellentjobs.JobsPlaceholders;
-import su.nightexpress.excellentjobs.zone.command.ZoneCommands;
+import su.nightexpress.excellentjobs.job.JobConstants;
+import su.nightexpress.excellentjobs.zone.ZoneConstants;
 import su.nightexpress.nightcore.locale.LangContainer;
 import su.nightexpress.nightcore.locale.LangEntry;
 import su.nightexpress.nightcore.locale.entry.MessageLocale;
@@ -59,9 +60,9 @@ public class ZoneLang implements LangContainer {
     );
 
     public static final MessageLocale ZONE_CREATE_INFO = LangEntry.builder("Zone.Creation.Info").chatMessage(
-        TagWrappers.GRAY.wrap("Select two corners and use " + TagWrappers.GREEN.wrap("/" + ZoneCommands.DEF_ROOT_NAME +
-            " " +
-            ZoneCommands.DEF_CREATE_NAME) + " to create a new zone.")
+        TagWrappers.GRAY.wrap("Select two corners and use " + TagWrappers.GREEN.wrap(
+                "/" + JobConstants.COMMAND_JOBS + " " + ZoneConstants.COMMAND_ZONE + " " + ZoneConstants.COMMAND_DEFINE
+        ) + " to create a new zone.")
     );
 
     public static final MessageLocale ZONE_SELECTION_INFO = LangEntry.builder("Zone.Selection.Info").chatMessage(

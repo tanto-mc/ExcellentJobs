@@ -101,6 +101,8 @@ public class JobsPlugin extends NightPlugin {
 
     @Override
     public void disable() {
+        this.commandProviders.clear();
+
         if (this.statsManager != null) this.statsManager.shutdown();
         if (this.zoneManager != null) this.zoneManager.shutdown();
         if (this.levelingManager != null) this.levelingManager.shutdown();

@@ -146,7 +146,7 @@
         <dependency>
             <groupId>com.pm2.infinitefishing</groupId>
             <artifactId>InfiniteFishing</artifactId>
-            <version>1.5.8</version>
+            <version>1.6.5</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
